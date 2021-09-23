@@ -719,8 +719,7 @@ export class CalciteSlider {
     }
 
     event.preventDefault();
-    this[activeProp] = this.clamp(adjustment, activeProp);
-    this.emitChange();
+    this.setValue(activeProp, this.clamp(adjustment, activeProp));
   }
 
   @Listen("click")
@@ -742,7 +741,9 @@ export class CalciteSlider {
         prop = closerToMax || position > this.maxValue ? "maxValue" : "minValue";
       }
     }
-    this[prop] = this.clamp(position, prop);
+    const value = this.clamp(position, prop);
+    this.lastDragPropValue = value;
+    this.setValue(prop, value);
     this.dragStart(prop);
   }
 
@@ -799,6 +800,8 @@ export class CalciteSlider {
   private dragProp: ActiveSliderProperty;
 
   private lastDragProp: ActiveSliderProperty;
+
+  private lastDragPropValue: number;
 
   private minHandle: HTMLButtonElement;
 
@@ -889,31 +892,48 @@ export class CalciteSlider {
           this.minMaxValueRange = this.maxValue - this.minValue;
         }
       } else {
-        this[this.dragProp] = this.clamp(value, this.dragProp);
+        this.setValue(this.dragProp, this.clamp(value, this.dragProp));
       }
-
-      this.emitChange();
     }
   };
-
-  private emitChange(): void {
-    this.calciteSliderChange.emit();
-    this.calciteSliderUpdate.emit();
-  }
 
   private dragEnd = (): void => {
     document.removeEventListener("pointermove", this.dragUpdate);
     document.removeEventListener("pointerup", this.dragEnd);
     document.removeEventListener("pointercancel", this.dragEnd);
 
-    this.emitChange();
     this.focusActiveHandle();
 
+    // maybe setValue's signature can be enhanced to move this inside and keep all value setting and value emitting together
+    if (this.lastDragPropValue != this[this.dragProp]) {
+      this.calciteSliderChange.emit();
+    }
+
     this.dragProp = null;
+    this.lastDragPropValue = null;
     this.minValueDragRange = null;
     this.maxValueDragRange = null;
     this.minMaxValueRange = null;
   };
+
+  private setValue(valueProp: string, value: number): void {
+    const oldValue = this[valueProp];
+    const valueChanged = oldValue !== value;
+
+    if (!valueChanged) {
+      return;
+    }
+
+    this[valueProp] = value;
+
+    const dragging = this.dragProp;
+    if (!dragging) {
+      this.calciteSliderChange.emit();
+    }
+
+    // this.calciteSliderInput.emit();
+    this.calciteSliderUpdate.emit();
+  }
 
   /**
    * If number is outside range, constrain to min or max
