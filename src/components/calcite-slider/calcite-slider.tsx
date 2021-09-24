@@ -108,6 +108,14 @@ export class CalciteSlider {
 
   //--------------------------------------------------------------------------
   //
+  //  Internal State/Props
+  //
+  //--------------------------------------------------------------------------
+
+  private trackEl: HTMLDivElement;
+
+  //--------------------------------------------------------------------------
+  //
   //  Lifecycle
   //
   //--------------------------------------------------------------------------
@@ -516,7 +524,7 @@ export class CalciteSlider {
       <Host id={id} onTouchStart={this.handleTouchStart}>
         <div class={{ container: true, "container--range": this.isRange }}>
           {this.renderGraph()}
-          <div class="track">
+          <div class="track" ref={this.storeTrackRef}>
             <div
               class="track__range"
               onPointerDown={() => this.dragStart("minMaxValue")}
@@ -741,10 +749,15 @@ export class CalciteSlider {
         prop = closerToMax || position > this.maxValue ? "maxValue" : "minValue";
       }
     }
-    const value = this.clamp(position, prop);
-    this.lastDragPropValue = value;
-    this.setValue(prop, value);
+
+    this.lastDragPropValue = this[prop];
     this.dragStart(prop);
+
+    const thumbHovered = !!this.el.shadowRoot.querySelector(".thumb:hover");
+
+    if (!thumbHovered) {
+      this.setValue(prop, this.clamp(position, prop));
+    }
   }
 
   handleTouchStart(event: TouchEvent): void {
@@ -822,6 +835,10 @@ export class CalciteSlider {
   //  Private Methods
   //
   //--------------------------------------------------------------------------
+
+  private storeTrackRef = (node: HTMLDivElement): void => {
+    this.trackEl = node;
+  };
 
   private shouldMirror(): boolean {
     return this.mirrored && !this.hasHistogram;
@@ -958,7 +975,7 @@ export class CalciteSlider {
    */
   private translate(x: number): number {
     const range = this.max - this.min;
-    const { left, width } = this.el.getBoundingClientRect();
+    const { left, width } = this.trackEl.getBoundingClientRect();
     const percent = (x - left) / width;
     const mirror = this.shouldMirror();
     let value = this.clamp(this.min + range * (mirror ? 1 - percent : percent));
