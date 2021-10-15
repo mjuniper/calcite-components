@@ -13,13 +13,13 @@ jobs:
         env:
           NEXT_RELEASE_ENABLED: secrets.NEXT_RELEASE_ENABLED
         if: ${{ env.NEXT_RELEASE_ENABLED }} == "true"
-      - run: npm install
-      - run: npm test
       - run: |
           touch .env
           echo NPM_TOKEN=${{ secrets.NPM_TOKEN }} >> .env
           echo GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} >> .env
           echo TRAVIS_REPO_SLUG="Esri/calcite-components" >> .env
+      - run: npm install
+      - run: npm test
       - run: bash /support/deployNextFromTravisWrapper.sh
   notify:
     runs-on: ubuntu-latest
