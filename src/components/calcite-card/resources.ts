@@ -5,7 +5,8 @@ export const CSS = {
   title: "title",
   subtitle: "subtitle",
   thumbnailWrapper: "thumbnail-wrapper",
-  checkboxWrapper: "checkbox-wrapper"
+  checkboxWrapper: "checkbox-wrapper",
+  horizontal: "horizonatal"
 };
 
 export const SLOTS = {
@@ -20,4 +21,9 @@ export const TEXT = {
   select: "Select",
   deselect: "Deselect",
   loading: "Loading"
+};
+
+export const LAYOUT = {
+  horizontal: "horizontal",
+  vertical: "vertical"
 };

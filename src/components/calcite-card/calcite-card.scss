@@ -25,6 +25,32 @@
   }
 }
 
+:host([layout="horizontal"]) {
+  .container {
+    @apply grid grid-cols-4;
+    grid-template-areas:
+      "thumbnail header header header"
+      "thumbnail content content content"
+      "thumbnail footer footer footer";
+  }
+
+  .thumbnail-wrapper {
+    grid-area: thumbnail;
+  }
+
+  .header {
+    grid-area: header;
+  }
+
+  .card-content {
+    grid-area: content;
+  }
+
+  .footer {
+    grid-area: footer;
+  }
+}
+
 .container {
   @apply flex-auto flex flex-col;
 }
@@ -89,7 +115,7 @@
 }
 
 @include slotted("thumbnail", "img") {
-  @apply max-w-full min-w-full;
+  @apply max-w-full min-w-full h-full object-cover object-center;
 }
 
 @include slotted("footer-leading", "*") {

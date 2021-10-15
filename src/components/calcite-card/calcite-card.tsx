@@ -1,5 +1,5 @@
 import { Component, Element, Event, EventEmitter, h, Prop, VNode } from "@stencil/core";
-import { CSS, SLOTS, TEXT } from "./resources";
+import { CSS, SLOTS, TEXT, LAYOUT } from "./resources";
 import { getElementDir } from "../../utils/dom";
 import { getKey } from "../../utils/key";
 import { CSS_UTILITY } from "../../utils/resources";
@@ -60,6 +60,8 @@ export class CalciteCard {
    * @default "Deselect"
    */
   @Prop({ reflect: false }) intlDeselect: string = TEXT.deselect;
+
+  @Prop() layout: string = LAYOUT.vertical;
 
   //--------------------------------------------------------------------------
   //

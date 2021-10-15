@@ -5,7 +5,6 @@ import readme from "./readme.md";
 
 export default {
   title: "Components/Card",
-
   parameters: {
     notes: readme
   }
@@ -346,6 +345,26 @@ export const RTL = (): string => html`
       <span slot="subtitle"
         >A great example of a study description that might wrap to a line or two, but isn't overly verbose.</span
       >
+    </calcite-card>
+  </div>
+`;
+
+const horizontalThumbnail = `<img alt="horizontal thumbnail" slot="thumbnail" src="${placeholderImage({
+  width: 200,
+  height: 133
+})}" />`;
+
+export const HorizontalLayout = (): string => html`
+  <div style="width: 80vw;">
+    <calcite-card layout="horizontal" ${boolean("loading", false)} ${boolean("selectable", false)}>
+      ${horizontalThumbnail}
+      <h3 slot="title">Untitled experience</h3>
+      <span slot="subtitle">Subtext</span>
+      <div>
+        lorem ipsum... but what if it's really, really, really, really, really, really, really, really, really, really,
+        really, really, really, really, really, really, really, really long?
+      </div>
+      <calcite-button slot="footer-leading" width="full">Go</calcite-button>
     </calcite-card>
   </div>
 `;
